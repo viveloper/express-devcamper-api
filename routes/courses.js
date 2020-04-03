@@ -8,6 +8,7 @@ const {
   updateCourse,
   deleteCourse
 } = require('../controllers/courses');
+const { protect, authorize } = require('../middlewares/auth');
 
 const router = express.Router({ mergeParams: true });
 
@@ -20,12 +21,12 @@ router
     }),
     getCourses
   )
-  .post(addCourse);
+  .post(protect, authorize('admin', 'publisher'), addCourse);
 
 router
   .route('/:id')
   .get(getCourse)
-  .put(updateCourse)
-  .delete(deleteCourse);
+  .put(protect, authorize('admin', 'publisher'), updateCourse)
+  .delete(protect, authorize('admin', 'publisher'), deleteCourse);
 
 module.exports = router;
